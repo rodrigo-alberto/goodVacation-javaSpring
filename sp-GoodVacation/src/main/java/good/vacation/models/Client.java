@@ -16,7 +16,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "userClient")
+@Table(name = "client_user")
 public class Client extends User {
 
 	@Column(name = "date_birth", nullable = false)
@@ -26,28 +26,24 @@ public class Client extends User {
 	@Column(nullable = false, length = 14, unique = true)
 	private String cpf;
 	
-	@Column(nullable = false, length = 85, unique = true)
-	private String email;
-	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private Sex sex;
 	
 	@ManyToMany
 	@JoinTable(name = "travel_package",
-	joinColumns = @JoinColumn(name = "fk_userClient_idUser"),
+	joinColumns = @JoinColumn(name = "fk_clientUser_idUser"),
 	inverseJoinColumns = @JoinColumn(name = "fk_trip_idTrip"))
 	private Set<Trip> trips = new HashSet<>();
 	
 	public Client() {
 	}	
-	
-	public Client(LocalDate dateBirth, String cpf, String email, Sex sex) {
-		super();
+
+	public Client(LocalDate dateBirth, String cpf, Sex sex, Set<Trip> trips) {
 		this.dateBirth = dateBirth;
 		this.cpf = cpf;
-		this.email = email;
 		this.sex = sex;
+		this.trips = trips;
 	}
 
 	public LocalDate getDateBirth() {
@@ -64,14 +60,6 @@ public class Client extends User {
 
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
-	}
-	
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	public Sex getSex() {

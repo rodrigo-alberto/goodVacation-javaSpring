@@ -5,13 +5,19 @@ import java.util.HashSet;
 import java.util.Set;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+import good.vacation.enums.TravelStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Trip {
@@ -25,7 +31,7 @@ public class Trip {
 	private LocalDateTime departureDate;
 	
 	@DateTimeFormat(iso = ISO.DATE_TIME)
-	@Column(nullable = false)		//Adicionar "name";
+	@Column(nullable = false, name = "arrival_price")
 	private LocalDateTime arrivalDate;
 	
 	@Column(nullable = false, name = "travel_price")
@@ -34,14 +40,21 @@ public class Trip {
 	@Column(nullable = false)
 	private boolean isPromotion;
 	
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, name = "travel_status")
+	private TravelStatus travelStatus;
+	
 	@ManyToMany(mappedBy = "trips", cascade = {CascadeType.ALL})
 	private Set<Client> clients = new HashSet<>();
+	
+	@ManyToOne
+	@JoinColumn(nullable = false, name = "fk_destiny_idDestiny")
+	private Destiny destiny;
 
 	public Trip() {
 	}
 
-	public Trip(Long idTrip, LocalDateTime departureDate, LocalDateTime arrivalDate, Double travelPrice, boolean isPromotion) {
-		this.idTrip = idTrip;
+	public Trip(LocalDateTime departureDate, LocalDateTime arrivalDate, Double travelPrice, boolean isPromotion) {
 		this.departureDate = departureDate;
 		this.arrivalDate = arrivalDate;
 		this.travelPrice = travelPrice;

@@ -29,14 +29,13 @@ public class Contact {
 	private LocalDateTime messageTime;
 	
 	@ManyToOne
-	@JoinColumn(nullable = false, name = "fk_userClient_idUser")
+	@JoinColumn(nullable = false, name = "fk_user_idUser")
 	private User user;
 
 	public Contact() {
 	}
 
-	public Contact(int idContact, String subject, String message, LocalDateTime messageTime) {
-		this.idContact = idContact;
+	public Contact(String subject, String message, LocalDateTime messageTime) {
 		this.subject = subject;
 		this.message = message;
 		this.messageTime = messageTime;
@@ -72,5 +71,13 @@ public class Contact {
 
 	public void setMessageTime(LocalDateTime messageTime) {
 		this.messageTime = messageTime;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }

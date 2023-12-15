@@ -3,15 +3,20 @@ package good.vacation.models;
 import java.util.List;
 import good.vacation.enums.AccessLevel;
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "user_type")
 public abstract class User {
 	
 	@Id
@@ -21,22 +26,25 @@ public abstract class User {
 	@Column(nullable = false, length = 85)
 	private String name;
 	
+	@Column(nullable = false, length = 85, unique = true)
+	private String email;
+	
 	@Column(nullable = false)
 	private String password;
 	
 	@Column(nullable = false)
 	private boolean isClient;
 	
-	@Column(columnDefinition = "longblob")
+	@Column(columnDefinition = "longblob", name = "profile_picture")
 	private byte[] profilePicture;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
+	@Column(nullable = false, name = "access_level")
 	private AccessLevel accessLevel;
 	
 	@OneToMany(mappedBy = "user")
 	private List<Contact> contacts;
-
+	
 	public Long getIdUser() {
 		return idUser;
 	}
@@ -51,6 +59,14 @@ public abstract class User {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getPassword() {
@@ -83,5 +99,13 @@ public abstract class User {
 
 	public void setAccessLevel(AccessLevel accessLevel) {
 		this.accessLevel = accessLevel;
+	}
+	
+	public List<Contact> getContacts() {
+		return contacts;
+	}
+
+	public void setContacts(List<Contact> contacts) {
+		this.contacts = contacts;
 	}
 }

@@ -1,9 +1,9 @@
 package good.vacation.enums;
 
 public enum AccessLevel {
-	ADMIN_ACESS(1, "adm"),
-	COMMON_ACCESS(2, "com"),
-	BLOCKED_ACCESS(3, "blo");
+	ADMIN_ACESS(1, "admin"),
+	COMMON_ACCESS(2, "common"),
+	BLOCKED_ACCESS(3, "blocked");
 
 	private final int cod;
 	private final String name;
