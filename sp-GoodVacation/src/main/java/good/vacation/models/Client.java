@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import good.vacation.enums.Sex;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,6 +33,7 @@ public class Client extends User {
 	@Column(nullable = false)
 	private Sex sex;
 	
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "travel_package",
 	joinColumns = @JoinColumn(name = "fk_clientUser_idUser"),

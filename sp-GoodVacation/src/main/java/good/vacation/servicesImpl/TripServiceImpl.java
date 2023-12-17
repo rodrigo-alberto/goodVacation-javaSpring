@@ -68,15 +68,6 @@ public class TripServiceImpl implements TripService {
 				SystemAlerts.printRuntimeEx(SystemAlerts.DEPENDENCY_ID_NOT_FOUND)
 		));
 		
-//		Set<Client> clients = updatedTripDto.getClients();
-//		
-//		if(!clients.isEmpty()) {
-//			for (Client client : clients) { 
-//				client.getTrips().add(existingTrip);
-//			}				
-//		}
-//		existingTrip.setClients(clients);
-		
 		return this.tripRepo.save(existingTrip);
 	}
 	
