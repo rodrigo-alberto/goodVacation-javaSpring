@@ -6,6 +6,5 @@ import jakarta.persistence.Entity;
 public class CommonUser extends User {
 
 	public CommonUser() {
-		super();
 	}
 }

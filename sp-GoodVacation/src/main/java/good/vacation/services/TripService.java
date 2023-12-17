@@ -1,18 +1,9 @@
 package good.vacation.services;
 
-import java.util.List;
-
-import good.vacation.models.Trip;
-
-public interface TripService { //Extender o service genérico;
+public interface TripService extends GenericCrudService { //Inserir update do status da viagem p/ restrição;
 	
-	Trip saveTrip(Trip trip);
+	void createPackage(Long idUserClient, Long idTrip);
 	
-	List<Trip> getAllTrips();
+//	List<Object> getAllPackages();
 	
-	Trip getTripById(Long idTrip);
-	
-	Trip UpdateTrip(Long id, Trip updatedTrip);
-	
-	void deleteTripById(Long idTrip);
 }

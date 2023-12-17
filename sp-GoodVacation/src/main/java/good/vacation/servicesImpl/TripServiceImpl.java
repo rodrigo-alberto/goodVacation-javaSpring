@@ -1,11 +1,16 @@
 package good.vacation.servicesImpl;
 
+import java.util.ArrayList;
 import java.util.List;
-
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import good.vacation.dtos.TripDto;
+import good.vacation.enums.SystemAlerts;
+import good.vacation.models.Client;
 import good.vacation.models.Trip;
+import good.vacation.repositories.ClientRepository;
+import good.vacation.repositories.DestinyRepository;
 import good.vacation.repositories.TripRepository;
 import good.vacation.services.TripService;
 
@@ -13,38 +18,83 @@ import good.vacation.services.TripService;
 public class TripServiceImpl implements TripService {
 
 	@Autowired
+	private ModelMapper mp;
+	
+	@Autowired
 	private TripRepository tripRepo;
 	
+	@Autowired
+	private DestinyRepository destinyRepo;
+	
+	@Autowired
+	private ClientRepository clientRepo;
+
 	@Override
-	public Trip saveTrip(Trip trip) {
-		return this.tripRepo.save(trip);
+	public Object saveObject(Object object) {
+		Trip savedTrip = mp.map(object, Trip.class);
+
+		savedTrip.setDestiny(this.destinyRepo.findById(((TripDto) object).getIdDestiny()).orElseThrow(() -> 
+			SystemAlerts.printRuntimeEx(SystemAlerts.DEPENDENCY_ID_NOT_FOUND)
+		));	
+		
+		this.tripRepo.save(savedTrip);
+		SystemAlerts.printSuccess(SystemAlerts.SAVED_SUCCESSFULLY);
+	
+		return savedTrip;
+	}
+	
+	@Override
+	public Object getObjectById(Long id) {
+		return this.tripRepo.findById(id).orElseThrow(() -> SystemAlerts.printRuntimeEx(SystemAlerts.ID_NOT_FOUND));
+	}
+	
+	@Override
+	public List<Object> getAllObjects() {
+		return new ArrayList<>(this.tripRepo.findAll());
+	}
+	
+	@Override
+	public Object updateObject(Long id, Object updatedObject) {
+		Trip existingTrip = this.tripRepo.findById(id).orElseThrow(() -> SystemAlerts.printRuntimeEx(SystemAlerts.ID_NOT_FOUND));
+		TripDto updatedTripDto = (TripDto) updatedObject;
+		
+		existingTrip.setDepartureDate(updatedTripDto.getDepartureDate());
+		existingTrip.setArrivalDate(updatedTripDto.getArrivalDate());
+		existingTrip.setTravelPrice(updatedTripDto.getTravelPrice());
+		existingTrip.setPromotion(updatedTripDto.isPromotion());
+		existingTrip.setTravelStatus(updatedTripDto.getTravelStatus());
+		
+		existingTrip.setDestiny(this.destinyRepo.findById(updatedTripDto.getIdDestiny()).orElseThrow(() -> 
+				SystemAlerts.printRuntimeEx(SystemAlerts.DEPENDENCY_ID_NOT_FOUND)
+		));
+		
+//		Set<Client> clients = updatedTripDto.getClients();
+//		
+//		if(!clients.isEmpty()) {
+//			for (Client client : clients) { 
+//				client.getTrips().add(existingTrip);
+//			}				
+//		}
+//		existingTrip.setClients(clients);
+		
+		return this.tripRepo.save(existingTrip);
+	}
+	
+	@Override
+	public void deleteObjectById(Long id) {
+		this.tripRepo.findById(id).orElseThrow(() -> SystemAlerts.printRuntimeEx(SystemAlerts.ID_NOT_FOUND));
+		this.tripRepo.deleteById(id);
 	}
 
 	@Override
-	public List<Trip> getAllTrips() {
-		return this.tripRepo.findAll();
-	}
-
-	@Override
-	public Trip getTripById(Long idTrip) {
-		return this.tripRepo.getReferenceById(idTrip);
-	}
-
-	@Override
-	public Trip UpdateTrip(Long idTrip, Trip updatedTrip) {
-		Trip existingTrip = this.tripRepo.findById(idTrip).orElse(null)
+	public void createPackage(Long idUserClient, Long idTrip) {
+		Client client = this.clientRepo.findById(idUserClient).orElseThrow(() -> SystemAlerts.printRuntimeEx(SystemAlerts.ID_NOT_FOUND));
+		Trip trip = this.tripRepo.findById(idTrip).orElseThrow(() -> SystemAlerts.printRuntimeEx(SystemAlerts.ID_NOT_FOUND));
 		
-		if( != null) {
-			
-		}
+		client.getTrips().add(trip);
+		trip.getClients().add(client);
 		
-		
-		return this.tripRepo.saveAndFlush(updatedTrip);
-	}
-
-	@Override
-	public void deleteTripById(Long idTrip) {
-		// TODO Auto-generated method stub
-		
+		this.tripRepo.save(trip);
+		this.clientRepo.save(client);
 	}
 }

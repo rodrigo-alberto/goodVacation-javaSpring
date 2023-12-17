@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import good.vacation.enums.TravelStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -26,12 +26,14 @@ public class Trip {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idTrip;
 	
+//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	@DateTimeFormat(iso = ISO.DATE_TIME)
 	@Column(nullable = false, name = "departure_date")
 	private LocalDateTime departureDate;
 	
+//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	@DateTimeFormat(iso = ISO.DATE_TIME)
-	@Column(nullable = false, name = "arrival_price")
+	@Column(nullable = false, name = "arrival_date")
 	private LocalDateTime arrivalDate;
 	
 	@Column(nullable = false, name = "travel_price")
@@ -45,6 +47,7 @@ public class Trip {
 	private TravelStatus travelStatus;
 	
 	@ManyToMany(mappedBy = "trips", cascade = {CascadeType.ALL})
+	@JsonIgnore
 	private Set<Client> clients = new HashSet<>();
 	
 	@ManyToOne
@@ -54,11 +57,12 @@ public class Trip {
 	public Trip() {
 	}
 
-	public Trip(LocalDateTime departureDate, LocalDateTime arrivalDate, Double travelPrice, boolean isPromotion) {
+	public Trip(LocalDateTime departureDate, LocalDateTime arrivalDate, Double travelPrice, boolean isPromotion, TravelStatus travelStatus) {
 		this.departureDate = departureDate;
 		this.arrivalDate = arrivalDate;
 		this.travelPrice = travelPrice;
 		this.isPromotion = isPromotion;
+		this.travelStatus = travelStatus;
 	}
 
 	public Long getIdTrip() {
@@ -101,11 +105,27 @@ public class Trip {
 		this.isPromotion = isPromotion;
 	}
 
+	public TravelStatus getTravelStatus() {
+		return travelStatus;
+	}
+
+	public void setTravelStatus(TravelStatus travelStatus) {
+		this.travelStatus = travelStatus;
+	}
+
 	public Set<Client> getClients() {
 		return clients;
 	}
 
 	public void setClients(Set<Client> clients) {
 		this.clients = clients;
+	}
+
+	public Destiny getDestiny() {
+		return destiny;
+	}
+	
+	public void setDestiny(Destiny destiny) {
+		this.destiny = destiny;
 	}
 }

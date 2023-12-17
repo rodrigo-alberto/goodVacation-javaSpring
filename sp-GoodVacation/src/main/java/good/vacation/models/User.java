@@ -1,6 +1,9 @@
 package good.vacation.models;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import good.vacation.enums.AccessLevel;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -42,6 +45,7 @@ public abstract class User {
 	@Column(nullable = false, name = "access_level")
 	private AccessLevel accessLevel;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "user")
 	private List<Contact> contacts;
 	

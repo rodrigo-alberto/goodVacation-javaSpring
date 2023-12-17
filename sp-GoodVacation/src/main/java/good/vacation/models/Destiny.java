@@ -16,7 +16,7 @@ public class Destiny {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int idDestiny;
+	private Long idDestiny;
 	
 	@Column(nullable = false, length = 85)
 	private String name;
@@ -28,7 +28,7 @@ public class Destiny {
 	private String city;
 
 	@Transient
-	@OneToMany(mappedBy = "trips")
+	@OneToMany(mappedBy = "destiny")
 	@JsonIgnore
 	private Set<Trip> trips = new HashSet<>();
 	
@@ -41,11 +41,11 @@ public class Destiny {
 		this.city = city;
 	}
 
-	public int getIdDestiny() {
+	public Long getIdDestiny() {
 		return idDestiny;
 	}
 
-	public void setIdDestiny(int idDestiny) {
+	public void setIdDestiny(Long idDestiny) {
 		this.idDestiny = idDestiny;
 	}
 
